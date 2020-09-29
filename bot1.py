@@ -1,25 +1,10 @@
 import os
 
 import discord,random
-from secret  import DISCORD_TOKEN
-TOKEN = os.getenv(DISCORD_TOKEN)
+#from secret  import DISCORD_TOKEN
+TOKEN = os.getenv(os.environ['DISCORD_TOKEN'])
 client = discord.Client()
-
-Indict={"Theres is derpression in your words": " ",
-"You were assumed to be straight, why haven't you come out yet": "? Oh yeah you dont have a dick",
-"Looks like sugar mama kicked":"out cause he did not do the only thing he was supposed to",
-"Only chance of":"getting laid is if he crawls up a chickens butt",
-"Listening to what" :"said, I would happily listen to manjusha instead",
-" ":"needs to figure out if he has a dick or a pussy first",
-"Where is your mom":"Oh yeah seeing you the second you were born, she ran away",
-"If people search trans in pornhub":"they get you",
-"Stop being anji !":" ",
-}
-
-list1,list2=[],[]
-for i,j in zip(Indict.keys(),Indict.values()):
-    list1.append(i)
-    list2.append(j)
+import requests
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
@@ -40,14 +25,16 @@ async def on_message(message):
             await panel.add_reaction('\U0001F3D3')
         if(message.author.bot):
          return
-        if message.content == '!ins':
+        if message.content == 'gn':
+            r = requests.get('https://evilinsult.com/generate_insult.php?lang=en&type=json')
+            text=r.json()
+            print(text['insult'])
             user = random.choice(message.channel.guild.members)
             author=message.author
             print(user==message.author)
-            num =random.randint(0,len(list1))
             for i in range(1000):
                 if not user.bot and not user==message.author:
-                    response = str(list1[num]) + " {0.mention} ".format(user)+str(list2[num])
+                    response = str(text['insult']) + " {0.mention} ".format(user)
                     break
                 else:
                     user = random.choice(message.channel.guild.members)
@@ -65,4 +52,4 @@ async def on_error(event, *args, **kwargs):
         else:
             raise
     
-client.run(DISCORD_TOKEN)
+client.run(os.environ['DISCORD_TOKEN'])
